@@ -3,146 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Melisa Sürpriz - Test</title>
+    <title>Melisa Sürpriz - Kalpli Test</title>
     <style>
         body {
-            margin: 0;
-            padding: 0;
+            margin: 0; padding: 0;
             background-color: #0d0d0d;
-            color: white;
-            font-family: 'Arial', sans-serif;
-            height: 100vh;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            color: white; font-family: 'Arial', sans-serif;
+            height: 100vh; overflow: hidden;
+            display: flex; justify-content: center; align-items: center;
         }
 
-        /* Soru İşaretleri Arkaplanı */
-        #question-marks-container {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            pointer-events: none;
+        /* Soru İşaretleri */
+        #question-marks, #hearts-container {
+            position: absolute; width: 100%; height: 100%;
+            z-index: 1; pointer-events: none;
         }
 
         .question-mark {
-            position: absolute;
-            color: rgba(255, 255, 255, 0.2);
-            font-size: 2.5rem;
-            animation: float 4s linear infinite;
-            transition: opacity 1.5s ease;
+            position: absolute; color: rgba(255, 255, 255, 0.2);
+            font-size: 2rem; animation: float 4s linear infinite;
+        }
+
+        /* Kalp Efekti */
+        .heart {
+            position: absolute; color: #ff4d4d;
+            font-size: 1.5rem; animation: heartFloat 3s ease-in infinite;
+            opacity: 0;
         }
 
         @keyframes float {
-            0% { transform: translateY(110vh) rotate(0deg); opacity: 0; }
-            50% { opacity: 0.6; }
-            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+            0% { transform: translateY(110vh); opacity: 0; }
+            50% { opacity: 0.5; }
+            100% { transform: translateY(-10vh); opacity: 0; }
         }
 
-        /* Ana İçerik */
-        .main-container {
-            position: relative;
-            z-index: 10;
-            text-align: center;
+        @keyframes heartFloat {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-100vh) scale(1.5); opacity: 0; }
         }
+
+        .main-container { z-index: 10; text-align: center; }
 
         #countdown {
-            font-size: 4rem;
-            font-weight: bold;
-            color: #ff4d4d;
-            text-shadow: 0 0 20px rgba(255, 77, 77, 0.6);
-            margin-bottom: 20px;
+            font-size: 4rem; font-weight: bold; color: #ff4d4d;
+            text-shadow: 0 0 20px rgba(255, 77, 77, 0.6); margin-bottom: 20px;
         }
 
-        .gift-box {
-            font-size: 100px;
-            filter: drop-shadow(0 0 15px gold);
-            transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .gift-box.open {
-            transform: scale(1.3) rotate(10deg);
-        }
+        .gift-box { font-size: 100px; transition: all 0.8s ease; }
+        .gift-box.open { transform: scale(1.2); }
 
         #surprise-message {
-            font-size: 2.5rem;
-            color: #ffd700;
-            margin-top: 20px;
-            opacity: 0;
-            transform: scale(0.5);
-            transition: all 1s ease;
-            text-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+            font-size: 2.5rem; color: #ffd700; margin-top: 20px;
+            opacity: 0; transform: scale(0.5); transition: all 1s ease;
         }
-
-        #surprise-message.show {
-            opacity: 1;
-            transform: scale(1);
-        }
+        #surprise-message.show { opacity: 1; transform: scale(1); }
     </style>
 </head>
 <body>
 
-    <div id="question-marks-container"></div>
+    <div id="question-marks"></div>
+    <div id="hearts-container"></div>
 
     <div class="main-container">
         <div id="countdown">00:00:00</div>
-        <div class="gift-area">
-            <div id="gift-box" class="gift-box">🎁</div>
-            <h1 id="surprise-message">Mutlu Yıllar Melisamm 💖</h1>
-        </div>
+        <div id="gift-box" class="gift-box">🎁</div>
+        <h1 id="surprise-message">Mutlu Yıllar Melisamm 💖</h1>
     </div>
 
     <script>
-        // TEST İÇİN: Bugün saat 18:12:00
-        const nowTest = new Date();
-        const targetTime = new Date(nowTest.getFullYear(), nowTest.getMonth(), nowTest.getDate(), 18, 12, 0).getTime();
+        // TEST SAATİ: 18:17:00
+        const now = new Date();
+        const target = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 18, 17, 0).getTime();
 
-        // Soru İşaretleri Oluşturma
-        const container = document.getElementById('question-marks-container');
-        function createQuestionMark() {
+        // Soru İşareti Yağmuru
+        const qContainer = document.getElementById('question-marks');
+        let qInterval = setInterval(() => {
             const q = document.createElement('div');
             q.className = 'question-mark';
             q.innerText = '?';
             q.style.left = Math.random() * 100 + 'vw';
-            container.appendChild(q);
-            setTimeout(() => { q.remove(); }, 4000);
-        }
+            qContainer.appendChild(q);
+            setTimeout(() => q.remove(), 4000);
+        }, 250);
 
-        let qInterval = setInterval(createQuestionMark, 250);
+        // Kalp Yağmuru Fonksiyonu
+        function startHearts() {
+            const hContainer = document.getElementById('hearts-container');
+            setInterval(() => {
+                const h = document.createElement('div');
+                h.className = 'heart';
+                h.innerText = '❤️';
+                h.style.left = Math.random() * 100 + 'vw';
+                h.style.bottom = '0';
+                hContainer.appendChild(h);
+                setTimeout(() => h.remove(), 3000);
+            }, 150);
+        }
 
         // Sayaç
         const timer = setInterval(() => {
-            const now = new Date().getTime();
-            const diff = targetTime - now;
-
-            const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            const s = Math.floor((diff % (1000 * 60)) / 1000);
+            const diff = target - new Date().getTime();
+            const h = Math.floor((diff / (1000*60*60)) % 24);
+            const m = Math.floor((diff / (1000*60)) % 60);
+            const s = Math.floor((diff / 1000) % 60);
 
             document.getElementById('countdown').innerText = 
-                (h < 10 ? "0"+h : h) + ":" + 
-                (m < 10 ? "0"+m : m) + ":" + 
-                (s < 10 ? "0"+s : s);
+                (h<10?"0"+h:h)+":"+(m<10?"0"+m:m)+":"+(s<10?"0"+s:s);
 
             if (diff <= 0) {
                 clearInterval(timer);
-                clearInterval(qInterval); 
-                
+                clearInterval(qInterval);
                 document.getElementById('countdown').style.display = 'none';
+                qContainer.style.opacity = '0';
                 
-                // Soru işaretlerini sil
-                const allQuestions = document.querySelectorAll('.question-mark');
-                allQuestions.forEach(el => el.style.opacity = '0');
-
-                // Kutuyu aç ve mesajı çıkar
                 setTimeout(() => {
-                    const box = document.getElementById('gift-box');
-                    box.innerHTML = '🎊';
-                    box.classList.add('open');
+                    document.getElementById('gift-box').innerHTML = '🎊';
+                    document.getElementById('gift-box').classList.add('open');
                     document.getElementById('surprise-message').classList.add('show');
-                }, 800);
+                    startHearts(); // Kalpleri başlat
+                }, 500);
             }
         }, 1000);
     </script>
